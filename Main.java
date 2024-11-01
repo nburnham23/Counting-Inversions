@@ -20,43 +20,49 @@ public class Main {
     //---------------------------------------------------
 
     public static Object[] sortAndCount(int values[]) {
+        System.out.println("sortAndCount");
         // implement this
-        /*
-        if the list have one element
-            there are no inversions
-        else
-            divide the list into two halves:
-                A contains the first (n/2) *ceiling* elements
-                B contains the remaining (n/2) *floor* elements
-                (rA,A) = sortAndCount(A)
-                (rB,B) = sortAndCount(B)
-                (r,L) = mergeAncCount(A,b)
-         return r = rA + rB + r, and the sorted list L
-         */
-        Object[] rtnval = new Object[values.length];
+
+        Object[] rtnval = new Object[2];
         Object[] merged = new Object[values.length];
 
 
         if(values.length == 1){
             // there are no inversions
-            // what to do in this? return?
-            return null;
+            // TODO: what to do here? return null?
+            rtnval[0] = 0;
+            rtnval[1] = values;
+            return rtnval;
         } else{
-            int[] first_half = new int[values.length/2 +1];
+            int [] first_half;
+            if(values.length % 2 == 0){
+                first_half = new int[values.length / 2];
+            }else{
+                first_half = new int[values.length / 2 + 1];
+            }
             int[] second_half = new int[values.length/2];
 
-            for(int i = 0; i < values.length; i++){
-                if(i <= values.length/2){
+            for(int i = 0; i < values.length; ++i){
+                if(i < first_half.length){
                     first_half[i] = values[i];
                 } else{
-                    second_half[i] = values[i];
+                    second_half[i - first_half.length] = values[i];
                 }
-                merged = mergeAndCount(first_half, second_half);
             }
-            // I don't think this is correct
-            rtnval[0] = first_half;
-            rtnval[1] = second_half;
-            rtnval[2] = merged;
+
+            Object result_first_half[] = sortAndCount(first_half);
+            int numInversions = (int) result_first_half[0];
+            int sortedList[] = (int[]) result_first_half[1];
+
+            Object result_second_half[] = sortAndCount(second_half);
+            int numInversions2 = (int) result_second_half[0];
+            int sortedList2[] = (int[]) result_second_half[1];
+
+            Object result_merged = mergeAndCount(first_half, second_half);
+            int numInversions3 = (int) result_merged[0];
+            int sortedList3[] = (int[]) result_merged[1];
+            rtnval[0] = numInversions + numInversions2 + numInversions3;
+            rtnval[1] = sortedList3;
             return rtnval;
         }
     }
@@ -64,63 +70,50 @@ public class Main {
     //---------------------------------------------------
 
     public static Object[] mergeAndCount(int A[], int B[]) {
+        System.out.println("mergeAndCount");
         // implement this
-        /*
-        maintain a current pointer into each list, initialized to point to the front elements
-        maintain a variable Count for the number of inversions, initialized to 0
-        while both lists are nonempty:
-            let ai and bj be the elements pointed to by the Current pointer
-            append the smaller of these two to the output lists
-            if bj is the smaller element then
-                increment Count by the number of elements remaining in A
-            advance the Current pointer in the list from which the smaller element was selected
-        once one list is empty, append the remainer of the other list to the output
-        return count and the merged list
-         */
         Object[] sorted = new Object[A.length + B.length];
-        Object[] returnVal = new Object[sorted.length + 1];
-        // TODO: how to do pointers?
-        int i =0;
-        int j = 0;
+        Object[] returnVal = new Object[2];
+
+        // these are the current elements in A and B
         int currA;
         int currB;
-        int aI;
-        int bJ;
+        // these are the current indices in A and B
+        int indexA = 0;
+        int indexB = 0;
+
         int counter = 0;
+        // current index of the sorted array
         int currentIndex = 0;
-        int original_length_a = A.length;
-        int original_length_b = B.length;
-        // while both lists nonempty
-        // TODO: how to check while both non empty?
-        while(A.length > 0 && B.length > 0) {
-            currA = A[i];
-            currB = B[j];
-            aI = currA;
-            bJ = currB;
+
+        while(indexA < A.length && indexB < B.length) {
+            currA = A[indexA];
+            currB = B[indexB];
+//            indexA = currA;
+//            indexB = currB;
             // append the smaller of the two to the output list
             // TODO: figure out how to find the index
             // advance the curr in list from which the smaller element was selected
-            if(aI < bJ){
-                sorted[currentIndex] = aI;
+            if(currA < currB){
+                sorted[currentIndex] = currA;
                 ++currentIndex;
-                ++i;
+                ++indexA;
             } else{
-                sorted[currentIndex] = bJ;
+                sorted[currentIndex] = currB;
                 ++currentIndex;
                 // increment counter by number of elements left in A
-                counter += A.length - i + 1;
-                ++j;
+                counter += A.length - indexA + 1;
+                ++indexB;
             }
         }
         // append remainder of other list to the output
-        if(A.length> 0){
-            for(int k = 0; i < A.length; ++i){
-                sorted[original_length_b + k -1] = A[k];
-            }
-        } else{
-            for(int k = 0; k < B.length; ++k){
-                sorted[original_length_a + k -1] = B[k];
-            }
+        while(indexA < A.length) {
+            sorted[indexA] = A[indexA];
+            ++indexA;
+        }
+        while(indexB < B.length) {
+            sorted[indexB] = B[indexB];
+            ++indexB;
         }
         // return count and the merged list
         returnVal[0] = counter;
