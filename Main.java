@@ -43,12 +43,12 @@ public class Main {
 
         if(values.length == 1){
             // there are no inversions
-            // TODO: what to do here? return null?
             rtnval[0] = 0;
             rtnval[1] = values;
             return rtnval;
         } else{
             int [] first_half;
+            // split into two halves. If odd number, make the first half longer.
             if(values.length % 2 == 0){
                 first_half = new int[values.length / 2];
             }else{
@@ -56,6 +56,7 @@ public class Main {
             }
             int[] second_half = new int[values.length/2];
 
+            // put the values into their respective halves
             for(int i = 0; i < values.length; ++i){
                 if(i < first_half.length){
                     first_half[i] = values[i];
@@ -64,6 +65,7 @@ public class Main {
                 }
             }
 
+            // sort, then merge the each half
             Object result_first_half[] = sortAndCount(first_half);
             int numInversions = (int) result_first_half[0];
             int sortedList[] = (int[]) result_first_half[1];
@@ -103,11 +105,7 @@ public class Main {
         while(indexA < A.length && indexB < B.length) {
             currA = A[indexA];
             currB = B[indexB];
-//            indexA = currA;
-//            indexB = currB;
             // append the smaller of the two to the output list
-            // TODO: figure out how to find the index
-            // advance the curr in list from which the smaller element was selected
             if(currA < currB){
                 sorted[currentIndex] = currA;
                 ++currentIndex;
