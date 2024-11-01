@@ -5,26 +5,40 @@ public class Main {
 
     public static void main(String argv[]) {
         Object rtnval1[] = testOne();
-        Object rtnval2[] = testTwo();
-        Object rtnval3[] = testThree();
-
-        int arr[] = (int[]) rtnval1[1];
-        int numInversions = (int) rtnval1[0];
-        System.out.println("# inversions = " + numInversions);
+        int arr1[] = (int[]) rtnval1[1];
+        int numInversions1 = (int) rtnval1[0];
+        System.out.println("# inversions = " + numInversions1);
         System.out.print("[");
-        for (int i=0; i<arr.length; ++i)
-            System.out.print(" " + arr[i]);
+        for (int i=0; i<arr1.length; ++i)
+            System.out.print(" " + arr1[i]);
+        System.out.println("]");
+
+        Object rtnval2[] = testTwo();
+        int arr2[] = (int[]) rtnval2[1];
+        int numInversions2 = (int) rtnval2[0];
+        System.out.println("# inversions = " + numInversions2);
+        System.out.print("[");
+        for (int i=0; i<arr2.length; ++i)
+            System.out.print(" " + arr2[i]);
+        System.out.println("]");
+
+        Object rtnval3[] = testThree();
+        int arr3[] = (int[]) rtnval3[1];
+        int numInversions3 = (int) rtnval3[0];
+        System.out.println("# inversions = " + numInversions3);
+        System.out.print("[");
+        for (int i = 0; i< arr3.length; ++i)
+            System.out.print(" " + arr3[i]);
         System.out.println("]");
     }
 
     //---------------------------------------------------
 
     public static Object[] sortAndCount(int values[]) {
-        System.out.println("sortAndCount");
         // implement this
 
-        Object[] rtnval = new Object[2];
-        Object[] merged = new Object[values.length];
+        Object rtnval[] = new Object[2];
+        Object merged[] = new Object[values.length];
 
 
         if(values.length == 1){
@@ -58,9 +72,10 @@ public class Main {
             int numInversions2 = (int) result_second_half[0];
             int sortedList2[] = (int[]) result_second_half[1];
 
-            Object result_merged = mergeAndCount(first_half, second_half);
+            Object[] result_merged = mergeAndCount(sortedList, sortedList2);
             int numInversions3 = (int) result_merged[0];
             int sortedList3[] = (int[]) result_merged[1];
+
             rtnval[0] = numInversions + numInversions2 + numInversions3;
             rtnval[1] = sortedList3;
             return rtnval;
@@ -70,9 +85,8 @@ public class Main {
     //---------------------------------------------------
 
     public static Object[] mergeAndCount(int A[], int B[]) {
-        System.out.println("mergeAndCount");
         // implement this
-        Object[] sorted = new Object[A.length + B.length];
+        int[] sorted = new int[A.length + B.length];
         Object[] returnVal = new Object[2];
 
         // these are the current elements in A and B
@@ -102,18 +116,20 @@ public class Main {
                 sorted[currentIndex] = currB;
                 ++currentIndex;
                 // increment counter by number of elements left in A
-                counter += A.length - indexA + 1;
+                counter += A.length - indexA;
                 ++indexB;
             }
         }
         // append remainder of other list to the output
         while(indexA < A.length) {
-            sorted[indexA] = A[indexA];
+            sorted[currentIndex] = A[indexA];
             ++indexA;
+            ++currentIndex;
         }
         while(indexB < B.length) {
-            sorted[indexB] = B[indexB];
+            sorted[currentIndex] = B[indexB];
             ++indexB;
+            ++currentIndex;
         }
         // return count and the merged list
         returnVal[0] = counter;
